@@ -1,0 +1,296 @@
+{
+  "info": {
+    "name": "Baozi Store",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "clienteId",
+      "value": ""
+    },
+    {
+      "key": "produtoId",
+      "value": ""
+    },
+    {
+      "key": "pedidoId",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "POST · Cliente",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/clientes",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nome\": \"Samuel5208099\",\n  \"clienteDesde\": \"2026-11-22\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 201\", function () { pm.response.to.have.status(201); });",
+              "if (pm.response.code === 201) pm.collectionVariables.set(\"clienteId\", pm.response.json().id);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "POST · Produto",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/produtos",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nome\": \"Baozi de legumes\",\n  \"preco\": 8.5,\n  \"estoque\": true\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 201\", function () { pm.response.to.have.status(201); });",
+              "if (pm.response.code === 201) pm.collectionVariables.set(\"produtoId\", pm.response.json().id);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "POST · Pedido",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/pedidos",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"clienteId\": {{clienteId}},\n  \"produtoId\": {{produtoId}},\n  \"quantidade\": 3\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 201\", function () { pm.response.to.have.status(201); });",
+              "if (pm.response.code === 201) pm.collectionVariables.set(\"pedidoId\", pm.response.json().id);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "GET geral · Cliente",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/clientes"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+              "pm.test(\"A lista contém o registro criado\", function () { pm.expect(pm.response.json().some(item => item.id === Number(pm.collectionVariables.get(\"clienteId\")))).to.be.true; });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "GET geral · Produto",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/produtos"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+              "pm.test(\"A lista contém o registro criado\", function () { pm.expect(pm.response.json().some(item => item.id === Number(pm.collectionVariables.get(\"produtoId\")))).to.be.true; });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "GET geral · Pedido",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/pedidos"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+              "pm.test(\"A lista contém o registro criado\", function () { pm.expect(pm.response.json().some(item => item.id === Number(pm.collectionVariables.get(\"pedidoId\")))).to.be.true; });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "GET por ID · Cliente",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/clientes/{{clienteId}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+              "pm.test(\"ID esperado\", function () { pm.expect(pm.response.json().id).to.eql(Number(pm.collectionVariables.get(\"clienteId\"))); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "GET por ID · Produto",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/produtos/{{produtoId}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+              "pm.test(\"ID esperado\", function () { pm.expect(pm.response.json().id).to.eql(Number(pm.collectionVariables.get(\"produtoId\"))); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "GET por ID · Pedido",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/pedidos/{{pedidoId}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+              "pm.test(\"ID esperado\", function () { pm.expect(pm.response.json().id).to.eql(Number(pm.collectionVariables.get(\"pedidoId\"))); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "DELETE · Pedido",
+      "request": {
+        "method": "DELETE",
+        "url": "{{baseUrl}}/pedidos/{{pedidoId}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 204\", function () { pm.response.to.have.status(204); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "DELETE · Produto",
+      "request": {
+        "method": "DELETE",
+        "url": "{{baseUrl}}/produtos/{{produtoId}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 204\", function () { pm.response.to.have.status(204); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "DELETE · Cliente",
+      "request": {
+        "method": "DELETE",
+        "url": "{{baseUrl}}/clientes/{{clienteId}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 204\", function () { pm.response.to.have.status(204); });"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
